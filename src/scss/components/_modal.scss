@@ -1,0 +1,29 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+
+    &-content {
+        min-width: 300px;
+        width: 60%;
+        background-color: $color-white;
+        position: relative;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 60px;
+        border-radius: 8px;
+    }
+
+    &-header {
+        margin-bottom: 40px;
+    }
+
+    &-body {
+        margin-bottom: 40px;
+    }
+}
