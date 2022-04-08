@@ -17,8 +17,5 @@
 
     &:hover {
         text-decoration: underline;
-        svg {
-            @extend .animation-sway;
-        }
     }
 }

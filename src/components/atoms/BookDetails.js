@@ -1,19 +1,21 @@
 const BookDetails = ({ data }) => {
   return (
     <>
+        
       <article className="book-details">
+      <h2>{data.title}</h2>
         <picture>
           <img src={data.book_image} alt="Book cover" />
         </picture>
         <p className="author">
-          <b>Author:</b> {data.author}
+          <span>Author:</span> {data.author}
         </p>
         <p className="publisher">
-          <b>Published by:</b> {data.publisher}
+          <span>Published by:</span> {data.publisher}
         </p>
-        <p className="descp">{data.description}</p>
+        <p className="descp"><span>Description:</span>{data.description}</p>
         <p className="buy-links">
-          <b>Purchase links:</b>
+          <span>Purchase links:</span>
           {data.buy_links.length !== 0 &&
             data.buy_links.map((link, index) => {
               return (

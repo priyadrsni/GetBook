@@ -16,13 +16,10 @@ const Cards = ({ data }) => {
 
   }
 
-  useEffect(() => {
-
-  }, [selectedCard])
   return (
     <>
     <ul className="card-wrap">
-      {data.map((item, index) => {
+      {data.length !== 0 && data.map((item, index) => {
         return (
           <li className="card" key={index} onClick={showCardDetails} data-isbn={item.primary_isbn10}>
             <img src={item.book_image} alt={item.title}/>
@@ -30,7 +27,7 @@ const Cards = ({ data }) => {
         );
       })}
     </ul>
-    {show && <Modal data={selectedCard} setShow={setShow} />}
+    {show && <Modal data={selectedCard} setShow={setShow} similarCards={data} setSelectedCard={setSelectedCard}/>}
     </>
   );
 };

@@ -1,98 +1,192 @@
 .genres {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    .genre {
-        .genre-heading {
-            background-color: $color-grey-100;
-            padding: 10px 0;
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-
-        h2 {
-            @extend .text-lg;
-            @extend .container;
-        }
-
-        .card-wrap {
-            margin-top: 40px;
-            margin-bottom: 80px;
-            @extend .container;
-
-            img {
-                width: 200px;
-                height: 300px;
-            }
-
-            .card {
-                margin-bottom: 20px;
-                &:hover {
-                    cursor: pointer;
-                    transform: scale(0.9);
-                    transition: transform 0.3s ease;
-                }
-            }
-        }
-
-        .modal {
-            &-header {
-                h2 {
-                    @extend .text-md;
-                    font-weight: bold;
-                }
-            }
-        
-            &-body {
-                picture {
-                    display: inline-block;
-                    margin-bottom: 20px;
-                    width: 200px;
-                    height: 300px;
-                    border-radius: 4px;
-                    overflow: hidden;
-                }
-                img {
-                    width: 100%;
-                }
-
-                .book-details {
-                    .descp {
-                        margin-bottom: 15px;
-                        @extend .text-md;
-                    }
-
-                    .author {
-                        margin-bottom: 8px;
-                    }
-                    .publisher {
-                        margin-bottom: 15px;
-                    }
-
-                    .date {
-                        @extend .text-xs;
-                        color: $color-grey-200;
-
-                        span {
-                            margin-right: 10px;
-                        }
-                    }
-                    .buy-links {
-                        margin-bottom: 40px;
-                        a {
-                            @extend .text-sm;
-                            font-weight: bold;
-                            color: $brand-primary-text;
-                            margin: 0 10px;
-                            text-decoration: underline;
-                        }
-                    }
-                }
-            }
-        
-            &-footer {
-        
-            }
-        }
+  .genre {
+    .genre-heading {
+      background-color: $color-grey-100;
+      padding: 10px 0;
+      z-index: 100;
+      transition: all 0.3s ease;
     }
+
+    h2 {
+      @extend .text-lg;
+      @extend .container;
+    }
+
+    .card-wrap {
+      margin-top: 40px;
+      margin-bottom: 80px;
+      @extend .container;
+
+      img {
+        width: 200px;
+        height: 300px;
+      }
+
+      .card {
+        margin-bottom: 20px;
+        &:hover {
+          cursor: pointer;
+          transform: scale(0.9);
+          transition: transform 0.3s ease;
+        }
+      }
+    }
+
+    .modal {
+      &-header {
+      }
+
+      &-body {
+        picture {
+          display: inline-block;
+          margin-bottom: 20px;
+          width: 200px;
+          height: 300px;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+        img {
+          width: 100%;
+        }
+
+        
+      }
+
+      .left {
+          width: 58%;
+      }
+      .right {
+          width: 40%;
+      }
+
+      .book-details {
+        max-height: 500px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: $brand-light-bg;
+
+        overflow: scroll;
+        h2 {
+          @extend .text-md;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+        .descp {
+          @extend .text-sm;
+          margin-bottom: 15px;
+          span {
+            display: block;
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: $brand-tertiary-text;
+          }
+        }
+
+        .author {
+          @extend .text-sm;
+          margin-bottom: 15px;
+          span {
+            display: block;
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: $brand-tertiary-text;
+          }
+        }
+        .publisher {
+          @extend .text-sm;
+          margin-bottom: 15px;
+          span {
+            display: block;
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: $brand-tertiary-text;
+          }
+        }
+
+        .date {
+          @extend .text-xs;
+          color: $color-grey-200;
+
+          span {
+            margin-right: 10px;
+          }
+        }
+        .buy-links {
+          @extend .text-sm;
+          margin-bottom: 40px;
+          span {
+            display: block;
+            font-weight: normal;
+            margin-bottom: 8px;
+            color: $brand-tertiary-text;
+          }
+          a {
+            @extend .text-sm;
+            font-weight: bold;
+            color: $brand-primary-text;
+            margin: 0 10px 0 0;
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .reviews {
+        padding: 30px;
+        background-color: $brand-light-bg;
+        max-height: 200px;
+        overflow: scroll;
+        li {
+            margin-bottom: 20px;
+        }
+        h3 {
+            @extend .text-md;
+            margin-bottom: 20px;
+        }
+        h4 {
+            @extend .text-sm;
+            margin-bottom: 8px;
+            color: $brand-tertiary-text;
+        }
+        p {
+            margin-bottom: 8px;
+            @extend .text-sm;
+        }
+        .link {
+            @extend .text-xs;
+            text-decoration: underline;
+        }
+      }
+
+      .similar-cards-wrap {
+        overflow: scroll;
+        padding: 20px;
+        height: 100%;
+        background-color: $brand-light-bg;
+  
+        h3 {
+          @extend .text-md;
+        }
+        img {
+          width: 100%;
+          height: auto;
+        }
+        .card {
+          width: 45%;
+          &:hover {
+            pointer-events: none;
+          }
+        }
+      }
+
+      &-footer {
+      }
+    }
+  }
+}
+
+.is-fixed ~ .genres {
+  margin-top: 138px;
 }

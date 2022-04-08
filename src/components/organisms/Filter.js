@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Dropdown from "../atoms/Dropdown";
 
-const Filter = ({ options, setSelectedGenre, setSelectedDate }) => {
+const Filter = ({ options, setSelectedGenre, setSelectedDate, getBestSellersByDate }) => {
   const [filteredOption, setFilteredOption] = useState("All");
   const [filteredDate, setFilteredDate] = useState('current');
   const date = new Date();
@@ -17,7 +17,8 @@ const Filter = ({ options, setSelectedGenre, setSelectedDate }) => {
 
   const updateDate = (e) => {
       console.log(e.target.value);
-    if(e.target.value !== '') setFilteredDate(e.target.value);
+    setFilteredDate(e.target.value);
+    if(e.target.value !== '') getBestSellersByDate(e.target.value);
   }
 
   useEffect(() => {

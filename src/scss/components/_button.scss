@@ -59,6 +59,6 @@ button.btn {
     transition: all .3s ease;
 
     &:hover {
-        background-color: darken($brand-secondary-bg, 10%);
+        background-color: $brand-light-bg;
     }
 }
