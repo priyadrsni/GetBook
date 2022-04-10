@@ -1,30 +1,15 @@
 import Dropdown from "../atoms/Dropdown";
 import InputDropdown from "../atoms/InputDropdown";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
-const Hero = ({bestSellers, bestSellerOptions, setBestSellers, setSelectedSearchPair, items, setItems}) => {
-    // const [inputDropdownOptions, setInputDropdownOptions] = useState([]);
+const Hero = ({bestSellerOptions, setSelectedSearchPair}) => {
     const [searchOption, setSearchOption] = useState("");
     const [searchValue, setSearchValue] = useState('');
 
     const updateBestSellers = (e) => {
         e.preventDefault();
-        console.log(bestSellers);
-        if(setSelectedSearchPair.category !== '' && setSelectedSearchPair.value !== '') {
-            const newArray = bestSellers.map((option) => {
-                return {...option, books: option.books.filter(item => item[searchOption.toLowerCase()].toLowerCase() === searchValue.toLowerCase())}
-            });
-            console.log(newArray);
-            setItems([...newArray]);
-        }
-        setSelectedSearchPair((prevState) => {
-            return {...prevState, category: searchOption, value: searchValue}
-        });
+        setSelectedSearchPair(searchOption, searchValue);
     }
-
-    // useEffect(() => {
-    //     // setInputDropdownOptions(bestSellers);
-    // }, [searchOption]);
 
     return (
         <section className="hero">
@@ -44,5 +29,3 @@ const Hero = ({bestSellers, bestSellerOptions, setBestSellers, setSelectedSearch
 }
 
 export default Hero;
-
-// e07a5f

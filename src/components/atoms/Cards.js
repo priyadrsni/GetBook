@@ -8,12 +8,8 @@ const Cards = ({ data }) => {
 
   const showCardDetails = (e) => {
     const cardData = data.filter(item => e.target.closest('li').getAttribute('data-isbn') === item.primary_isbn10);
-    // setSelectedCard(prevState => ([...prevState, ...card]));
-    console.log(cardData);
     setSelectedCard(prevState => ({...prevState, card: cardData}));
     setShow(!show);
-    console.log(selectedCard.card);
-
   }
 
   return (

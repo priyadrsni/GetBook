@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import Dropdown from "../atoms/Dropdown";
 
-const Filter = ({ options, setSelectedGenre, setSelectedDate, getBestSellersByDate }) => {
+const Filter = ({ options, setGenreAndDate, getBestSellersByDate }) => {
   const [filteredOption, setFilteredOption] = useState("All");
   const [filteredDate, setFilteredDate] = useState('current');
-  const date = new Date();
-  const today = [date.getFullYear(), date.getMonth(), date.getDate()].join('-');
 
   const isFixed = (e) => {
     const filterSection = document.querySelector(".filter-wrap");
@@ -16,20 +14,18 @@ const Filter = ({ options, setSelectedGenre, setSelectedDate, getBestSellersByDa
   };
 
   const updateDate = (e) => {
-      console.log(e.target.value);
-    setFilteredDate(e.target.value);
+    let date = e.target.value === "" ? 'current' : e.target.value;
+    setFilteredDate(date);
     if(e.target.value !== '') getBestSellersByDate(e.target.value);
   }
 
   useEffect(() => {
-    console.log(options);
-    setSelectedGenre(filteredOption);
-    setSelectedDate(filteredDate);
+    setGenreAndDate(filteredOption, filteredDate);
     window.addEventListener("scroll", isFixed);
     return () => {
       window.removeEventListener("scroll", isFixed);
     };
-  }, [options, filteredOption, filteredDate, setSelectedGenre, setSelectedDate]);
+  }, [options, filteredOption, filteredDate, setGenreAndDate]);
 
   return (
     <section className="filter-wrap">

@@ -138,6 +138,8 @@
         background-color: $brand-light-bg;
         max-height: 200px;
         overflow: scroll;
+        height: 100%; 
+
         li {
             margin-bottom: 20px;
         }
@@ -165,6 +167,8 @@
         padding: 20px;
         height: 100%;
         background-color: $brand-light-bg;
+        max-height: 720px;
+        overflow: scroll;
   
         h3 {
           @extend .text-md;

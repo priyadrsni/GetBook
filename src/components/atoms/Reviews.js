@@ -1,19 +1,4 @@
-import { useEffect, useState } from "react";
-import axios from 'axios';
-
-const Reviews = ({isbn}) => {
-    const [reviews, setReviews] = useState([]);
-    const getReviewsForABook = () => {
-        axios.get(`https://api.nytimes.com/svc/books/v3/reviews.json?api-key=${process.env.REACT_APP_API_KEY}&isbn=${isbn}`)
-        .then(res => {
-            setReviews([...res.data.results]);
-        })
-        
-    }
-
-    useEffect(() => {
-        getReviewsForABook();
-    }, []);
+const Reviews = ({reviews}) => {
 
     return (
         <div className="reviews">

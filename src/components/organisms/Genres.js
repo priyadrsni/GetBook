@@ -1,8 +1,7 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Cards from "../atoms/Cards";
 
-const Genres = ({ genre, selectedDate, bestSellers, items, setItems, selectedSearchPair }) => {
+const Genres = ({ items }) => {
   const isSticky = (e) => {
     const genreHeading = document.querySelectorAll(".genre-heading");
     genreHeading.forEach((item) => {
@@ -13,48 +12,12 @@ const Genres = ({ genre, selectedDate, bestSellers, items, setItems, selectedSea
     });
   };
 
-  const updateBestSellers = () => {
-      console.log("update best sellers");
-    let newArray = []
-    
-    if(selectedSearchPair.category !== 'all' && selectedSearchPair.value !== 'all') {
-        console.log("category ", bestSellers)
-        if(genre !== "All") {
-            newArray =bestSellers.filter(bestSeller => genre.toLowerCase() === bestSeller.list_name.toLowerCase())
-            .map((option) => {
-                return {...option, books: option.books.filter(item => item[selectedSearchPair.category.toLowerCase()].toLowerCase() === selectedSearchPair.value.toLowerCase())}
-            });
-            setItems([...newArray]);
-        }
-        else {
-            newArray = bestSellers.map((option) => {
-                return {...option, books: option.books.filter(item => item[selectedSearchPair.category.toLowerCase()].toLowerCase() === selectedSearchPair.value.toLowerCase())}
-            })
-            setItems([...newArray]);
-        }
-    }
-    else {
-        
-        if(genre !== "All") {
-            newArray = bestSellers.filter(bestSeller => genre.toLowerCase() === bestSeller.list_name.toLowerCase());
-            setItems([...newArray]);
-        }
-        else {
-            console.log(bestSellers);
-            setItems([...bestSellers]);
-        }
-    }
-  };
-
   useEffect(() => {
-    console.log("ff");
-    updateBestSellers();
     window.addEventListener("scroll", isSticky);
     return () => {
       window.removeEventListener("scroll", isSticky);
     };
-  }, [bestSellers, genre, selectedDate]);
- console.log(items);
+  }, []);
   return (
     <section className="genres">
       {items.map((item, index) => {
@@ -64,7 +27,6 @@ const Genres = ({ genre, selectedDate, bestSellers, items, setItems, selectedSea
               <div className="genre-heading">
                 <h2>{item.list_name}</h2>
               </div>
-
               <Cards data={item.books} />
             </div>
           )
