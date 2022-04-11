@@ -10,9 +10,9 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterBy: {
-        category: "",
-        categoryValue: "",
+      filters: {
+        category: "all",
+        categoryValue: "all",
         genre: "All",
         date: "current",
       },
@@ -23,11 +23,27 @@ class Home extends Component {
     };
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { category, categoryValue, genre, date } = this.state.filters;
+    if (
+      date !== prevState.filters.date ||
+      category !== prevState.filters.category ||
+      categoryValue !== prevState.filters.categoryValue ||
+      genre !== prevState.filters.genre
+    ) {
+      this.applyFilter();
+    }
+  }
+
   setCategoryAndSearchValue = (category, categoryValue) => {
     this.setState({
       ...this.state,
-      filterBy: {
-        ...this.state.filterBy,
+      filters: {
+        ...this.state.filters,
         category: category,
         categoryValue: categoryValue,
       },
@@ -37,8 +53,8 @@ class Home extends Component {
   setGenreAndDate = (genre, date) => {
     this.setState({
       ...this.state,
-      filterBy: {
-        ...this.state.filterBy,
+      filters: {
+        ...this.state.filters,
         genre: genre,
         date: date,
       },
@@ -46,8 +62,12 @@ class Home extends Component {
   };
 
   setBooksToBeDisplayed = (newItems) => {
-    console.log(newItems)
-    this.setState(prevState => ({ ...prevState, booksToBeDisplayed: newItems }));
+    console.log("3");
+    console.log(newItems);
+    this.setState((prevState) => ({
+      ...prevState,
+      booksToBeDisplayed: newItems,
+    }));
   };
 
   fetchOverviewLists = async () => {
@@ -59,18 +79,17 @@ class Home extends Component {
         },
       }
     );
-    this.setState({
-      ...this.state,
+
+    return {
       bestSellers: res.data.results.lists,
       bestSellerOptions: res.data.results.lists,
-    });
+    };
   };
 
   getBestSellersByDate = async () => {
-    const { genre, date } = this.state.filterBy;
-    const currentGenre = genre === "All" ? "Hardcover fiction" : genre;
+    const { genre, date } = this.state.filters;
     const res = await axios.get(
-      `https://api.nytimes.com/svc/books/v3/lists/${date}/${currentGenre
+      `https://api.nytimes.com/svc/books/v3/lists/${date}/${genre
         .toLowerCase()
         .split(" ")
         .join("-")}.json`,
@@ -80,115 +99,88 @@ class Home extends Component {
         },
       }
     );
-    this.setState({ ...this.state, bestSellersByDate: [res.data.results] });
+    return [res.data.results];
   };
 
-  updateByGenre = (data) => {
-    const { genre, date } = this.state.filterBy;
-    let newArray = [];
-    if (genre !== "All") {
-      if(!(date === "current")) {
-        console.log(data);
-        this.setBooksToBeDisplayed(data);
-      }
-      else {
-        newArray = data.filter(
-          (item) => genre.toLowerCase() === item.list_name.toLowerCase()
-        );
-      }
-      this.setBooksToBeDisplayed(newArray);
-    }
+  getBooks = (bestSellers) => {
+    const { category, categoryValue } = this.state.filters;
+
+    const newArray = bestSellers.map((option) => {
+      return {
+        ...option,
+        books: option.books.filter(
+          (item) =>
+            item[category.toLowerCase()].toLowerCase() ===
+            categoryValue.toLowerCase()
+        ),
+      };
+    });
+    return newArray;
   };
 
-  filterByCategoryAndValue = () => {
-    const { bestSellers, booksToBeDisplayed, bestSellersByDate } = this.state;
-    const { category, categoryValue, date } = this.state.filterBy;
+  getBooksByDate = (bestSellersByDate) => {
+    const { category, categoryValue } = this.state.filters;
 
-    if (
-      !(category === "" && categoryValue === "") &&
-      !(category === "all" && categoryValue === "all") &&
-      !(date === "current")
-    ) {
-      const newArray = bestSellersByDate.map((option) => {
-        return {
-          ...option,
-          books: option.books.filter(
-            (item) =>
-              item[category.toLowerCase()].toLowerCase() ===
-              categoryValue.toLowerCase()
-          ),
-        };
-      });
-      this.setState((prevState) => ({
-        ...prevState,
-        booksToBeDisplayed: newArray,
-      }));
-      this.updateByGenre(booksToBeDisplayed);
-    } else if (
-      !(category === "" && categoryValue === "") &&
-      !(category === "all" && categoryValue === "all")
-    ) {
-      const newArray = bestSellers.map((option) => {
-        return {
-          ...option,
-          books: option.books.filter(
-            (item) =>
-              item[category.toLowerCase()].toLowerCase() ===
-              categoryValue.toLowerCase()
-          ),
-        };
-      });
-      this.setState((prevState) => ({
-        ...prevState,
-        booksToBeDisplayed: newArray,
-      }));
-      this.updateByGenre(booksToBeDisplayed);
-    } else if (!(date === "current")) {
-      console.log("date ....")
-      this.setState((prevState) => ({
-        ...prevState,
-        booksToBeDisplayed: [...bestSellersByDate],
-      }));
-      this.updateByGenre(bestSellersByDate);
+    const newArray = bestSellersByDate.map((option) => {
+      return {
+        ...option,
+        books: option.books.filter(
+          (item) =>
+            item[category.toLowerCase()].toLowerCase() ===
+            categoryValue.toLowerCase()
+        ),
+      };
+    });
+    return newArray;
+  };
+
+  getBooksBasedOnFilter = async (bestSellers) => {
+    const { category, categoryValue, genre } = this.state.filters;
+
+    let data = {};
+    if (genre === "All") {
+      if (
+        !["all", ""].includes(category) &&
+        !["all", ""].includes(categoryValue)
+      ) {
+        const booksToBeDisplayed = this.getBooks(bestSellers);
+        data.booksToBeDisplayed = booksToBeDisplayed;
+      } else {
+        data.booksToBeDisplayed = bestSellers;
+      }
     } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        booksToBeDisplayed: bestSellers,
-      }));
-      this.updateByGenre(bestSellers);
+      const bestSellersByDate = await this.getBestSellersByDate();
+      data.bestSellersByDate = bestSellersByDate;
+      if (
+        !["all", ""].includes(category) &&
+        !["all", ""].includes(categoryValue)
+      ) {
+        const booksToBeDisplayedByDate = this.getBooksByDate(bestSellersByDate);
+        data.booksToBeDisplayed = booksToBeDisplayedByDate;
+      } else {
+        data.booksToBeDisplayed = bestSellersByDate;
+      }
     }
+    return data;
   };
 
   fetchData = async () => {
-    await this.fetchOverviewLists();
-    await this.getBestSellersByDate();
-    this.filterByCategoryAndValue();
+    const overiewLists = await this.fetchOverviewLists();
+    const data = await this.getBooksBasedOnFilter(overiewLists.bestSellers);
+    this.setState((prevState) => ({
+      ...prevState,
+      ...overiewLists,
+      ...data,
+    }));
   };
 
-  fetchByDate = async () => {
-    await this.getBestSellersByDate();
-    this.filterByCategoryAndValue();
+  applyFilter = async () => {
+    const data = await this.getBooksBasedOnFilter(this.state.bestSellers);
+    this.setState((prevState) => ({
+      ...prevState,
+      ...data,
+    }));
   };
-
-  componentDidUpdate(prevProps, prevState) {
-    const { category, categoryValue, genre, date } = this.state.filterBy;
-    if (date !== prevState.filterBy.date) {
-      this.fetchByDate();
-    }
-    if (
-      category !== prevState.filterBy.category ||
-      categoryValue !== prevState.filterBy.categoryValue
-    ) {
-      this.filterByCategoryAndValue();
-    }
-    if (genre !== prevState.filterBy.genre) {
-      this.fetchByDate().then((res) => console.log(res));
-    }
-  }
-
-  componentDidMount() {
-    this.fetchData().then((res) => console.log(res));
-  }
 
   render() {
     const { bestSellerOptions, booksToBeDisplayed } = this.state;
