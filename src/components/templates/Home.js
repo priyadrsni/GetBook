@@ -2,7 +2,7 @@ import Hero from "../organisms/Hero";
 import Filter from "../organisms/Filter";
 import Genres from "../organisms/Genres";
 import axios from "axios";
-import { useState, useEffect, Component } from "react";
+import { Component } from "react";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -10,31 +10,44 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      category: "",
-      searchValue: "",
-      genre: "All",
-      date: "current",
+      filterBy: {
+        category: "",
+        categoryValue: "",
+        genre: "All",
+        date: "current",
+      },
       bestSellers: [],
       bestSellerOptions: [],
       bestSellersByDate: [],
-      items: [],
+      booksToBeDisplayed: [],
     };
   }
 
-  setCategoryAndSearchValue = (category, searchValue) => {
+  setCategoryAndSearchValue = (category, categoryValue) => {
     this.setState({
       ...this.state,
-      category: category,
-      searchValue: searchValue,
+      filterBy: {
+        ...this.state.filterBy,
+        category: category,
+        categoryValue: categoryValue,
+      },
     });
   };
 
   setGenreAndDate = (genre, date) => {
-    this.setState({ ...this.state, genre: genre, date: date });
+    this.setState({
+      ...this.state,
+      filterBy: {
+        ...this.state.filterBy,
+        genre: genre,
+        date: date,
+      },
+    });
   };
 
-  setItems = (newItems) => {
-    this.setState({ ...this.state, items: newItems });
+  setBooksToBeDisplayed = (newItems) => {
+    console.log(newItems)
+    this.setState(prevState => ({ ...prevState, booksToBeDisplayed: newItems }));
   };
 
   fetchOverviewLists = async () => {
@@ -54,10 +67,10 @@ class Home extends Component {
   };
 
   getBestSellersByDate = async () => {
-    const genre =
-      this.state.genre === "All" ? "Hardcover fiction" : this.state.genre;
+    const { genre, date } = this.state.filterBy;
+    const currentGenre = genre === "All" ? "Hardcover fiction" : genre;
     const res = await axios.get(
-      `https://api.nytimes.com/svc/books/v3/lists/${this.state.date}/${genre
+      `https://api.nytimes.com/svc/books/v3/lists/${date}/${currentGenre
         .toLowerCase()
         .split(" ")
         .join("-")}.json`,
@@ -67,66 +80,82 @@ class Home extends Component {
         },
       }
     );
-
     this.setState({ ...this.state, bestSellersByDate: [res.data.results] });
   };
 
   updateByGenre = (data) => {
-    if (this.state.genre !== "All") {
-      this.setItems(
-        data.filter(
-          (item) =>
-            this.state.genre.toLowerCase() === item.list_name.toLowerCase()
-        )
-      );
+    const { genre, date } = this.state.filterBy;
+    let newArray = [];
+    if (genre !== "All") {
+      if(!(date === "current")) {
+        console.log(data);
+        this.setBooksToBeDisplayed(data);
+      }
+      else {
+        newArray = data.filter(
+          (item) => genre.toLowerCase() === item.list_name.toLowerCase()
+        );
+      }
+      this.setBooksToBeDisplayed(newArray);
     }
   };
 
   filterByCategoryAndValue = () => {
+    const { bestSellers, booksToBeDisplayed, bestSellersByDate } = this.state;
+    const { category, categoryValue, date } = this.state.filterBy;
+
     if (
-      this.state.category !== "" &&
-      this.state.searchValue !== "" &&
-      (this.state.category !== "all" && this.state.searchValue !== "all") &&
-      this.state.date !== "current"
+      !(category === "" && categoryValue === "") &&
+      !(category === "all" && categoryValue === "all") &&
+      !(date === "current")
     ) {
-      const newArray = this.state.bestSellersByDate.map((option) => {
+      const newArray = bestSellersByDate.map((option) => {
         return {
           ...option,
           books: option.books.filter(
             (item) =>
-              item[this.state.category.toLowerCase()].toLowerCase() ===
-              this.state.searchValue.toLowerCase()
+              item[category.toLowerCase()].toLowerCase() ===
+              categoryValue.toLowerCase()
           ),
         };
       });
-      this.setState((prevState) => ({ ...prevState, items: newArray }));
-      this.updateByGenre(this.state.items);
-    } else if ((this.state.category !== "" && this.state.searchValue !== "") && (this.state.category !== "all" && this.state.searchValue !== "all")) {
-      const newArray = this.state.bestSellers.map((option) => {
+      this.setState((prevState) => ({
+        ...prevState,
+        booksToBeDisplayed: newArray,
+      }));
+      this.updateByGenre(booksToBeDisplayed);
+    } else if (
+      !(category === "" && categoryValue === "") &&
+      !(category === "all" && categoryValue === "all")
+    ) {
+      const newArray = bestSellers.map((option) => {
         return {
           ...option,
           books: option.books.filter(
             (item) =>
-              item[this.state.category.toLowerCase()].toLowerCase() ===
-              this.state.searchValue.toLowerCase()
+              item[category.toLowerCase()].toLowerCase() ===
+              categoryValue.toLowerCase()
           ),
         };
       });
-      this.setState((prevState) => ({ ...prevState, items: newArray }));
-      this.updateByGenre(this.state.items);
-    } else if (this.state.date !== "current"){
-        console.log("inside current");
-        this.setState((prevState) => ({
-            ...prevState,
-            items: [...this.state.bestSellersByDate],
-          }));
-          this.updateByGenre(this.state.bestSellersByDate);
+      this.setState((prevState) => ({
+        ...prevState,
+        booksToBeDisplayed: newArray,
+      }));
+      this.updateByGenre(booksToBeDisplayed);
+    } else if (!(date === "current")) {
+      console.log("date ....")
+      this.setState((prevState) => ({
+        ...prevState,
+        booksToBeDisplayed: [...bestSellersByDate],
+      }));
+      this.updateByGenre(bestSellersByDate);
     } else {
       this.setState((prevState) => ({
         ...prevState,
-        items: this.state.bestSellers,
+        booksToBeDisplayed: bestSellers,
       }));
-      this.updateByGenre(this.state.bestSellers);
+      this.updateByGenre(bestSellers);
     }
   };
 
@@ -134,29 +163,27 @@ class Home extends Component {
     await this.fetchOverviewLists();
     await this.getBestSellersByDate();
     this.filterByCategoryAndValue();
-    console.log(this.state);
+  };
+
+  fetchByDate = async () => {
+    await this.getBestSellersByDate();
+    this.filterByCategoryAndValue();
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const { category, categoryValue, genre, date } = this.state.filterBy;
+    if (date !== prevState.filterBy.date) {
+      this.fetchByDate();
+    }
     if (
-      this.state.category !== "all" &&
-      this.state.searchValue !== "all" &&
-      (this.state.category !== prevState.category ||
-        this.state.searchValue !== prevState.searchValue)
+      category !== prevState.filterBy.category ||
+      categoryValue !== prevState.filterBy.categoryValue
     ) {
-      console.log("calling first if");
       this.filterByCategoryAndValue();
     }
-    if (this.state.date !== prevState.date) {
-      console.log("calling second if");
-      this.getBestSellersByDate();
-      this.filterByCategoryAndValue();
+    if (genre !== prevState.filterBy.genre) {
+      this.fetchByDate().then((res) => console.log(res));
     }
-    if ((this.state.genre !== prevState.genre) || (this.state.category !== prevState.category ||
-        this.state.searchValue !== prevState.searchValue)) {
-        console.log("calling third if");
-        this.filterByCategoryAndValue();
-      }
   }
 
   componentDidMount() {
@@ -164,124 +191,21 @@ class Home extends Component {
   }
 
   render() {
+    const { bestSellerOptions, booksToBeDisplayed } = this.state;
     return (
       <>
         <Hero
-          bestSellerOptions={this.state.bestSellerOptions}
+          bestSellerOptions={bestSellerOptions}
           setSelectedSearchPair={this.setCategoryAndSearchValue}
         />
         <Filter
-          options={this.state.bestSellerOptions}
+          bestSellerOptions={bestSellerOptions}
           setGenreAndDate={this.setGenreAndDate}
-          getBestSellersByDate={this.getBestSellersByDate}
         />
-        <Genres
-          items={this.state.items}
-        />
+        <Genres booksToBeDisplayed={booksToBeDisplayed} />
       </>
     );
   }
 }
-
-const Home1 = () => {
-  const [bestSellers, setBestSellers] = useState([]);
-  const [bestSellerOptions, setBestSellerOptions] = useState([]);
-  const [selectedSearchPair, setSelectedSearchPair] = useState({
-    category: "all",
-    searchValue: "all",
-  });
-  const [selectedGenre, setSelectedGenre] = useState("All");
-  const [selectedDate, setSelectedDate] = useState("current");
-  const [items, setItems] = useState([]);
-
-  const fetchData = async () => {
-    // const getAllData = [];
-
-    const res = await axios.get(
-      `https://api.nytimes.com/svc/books/v3/lists/overview.json?api-key=aJfUEi9sfn270VuLKZdWYsJ5b794S2zr`
-    );
-    console.log(res);
-    setBestSellers(res.data.results.lists);
-    setBestSellerOptions(res.data.results.lists);
-
-    // listOfGenres.slice(0, 7).forEach(item => {
-    //     getAllData.push(axios.get(`https://api.nytimes.com/svc/books/v3/lists.json?api-key=${API_KEY}&list=${item.list_name_encoded}`));
-    // });
-
-    // axios.all(getAllData).then(
-    //     axios.spread((...allData) => {
-    //         setBestSellers(...allData);
-    //     })
-    // )
-  };
-
-  const getBestSellersByDate = () => {
-    console.log("get best sellers");
-
-    console.log(selectedDate);
-    if (selectedGenre !== "All") {
-      axios
-        .get(
-          `https://api.nytimes.com/svc/books/v3/lists/${selectedDate}/${selectedGenre
-            .toLowerCase()
-            .split(" ")
-            .join("-")}.json?api-key=${API_KEY}`
-        )
-        .then((res) => {
-          console.log(res);
-          setBestSellers([res.data.results]);
-        });
-      if (selectedSearchPair.category !== "all") {
-        console.log("hi");
-        const newArray = bestSellers.map((option) => {
-          return {
-            ...option,
-            books: option.books.filter(
-              (item) =>
-                item[
-                  selectedSearchPair.category.toLowerCase()
-                ].toLowerCase() === selectedSearchPair.searchValue.toLowerCase()
-            ),
-          };
-        });
-        setBestSellers([...newArray]);
-      }
-      console.log(selectedSearchPair.category);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedDate === "current" || selectedDate === "") fetchData();
-    if (selectedDate !== "") getBestSellersByDate();
-    console.log(bestSellers);
-  }, [selectedGenre, selectedDate]);
-
-  return (
-    <>
-      <Hero
-        bestSellers={bestSellers}
-        bestSellerOptions={bestSellerOptions}
-        setBestSellers={setBestSellers}
-        setSelectedSearchPair={setSelectedSearchPair}
-        items={items}
-        setItems={setItems}
-      />
-      <Filter
-        options={bestSellerOptions}
-        setSelectedGenre={setSelectedGenre}
-        setSelectedDate={setSelectedDate}
-        getBestSellersByDate={getBestSellersByDate}
-      />
-      <Genres
-        genre={selectedGenre}
-        selectedDate={selectedDate}
-        bestSellers={bestSellers}
-        selectedSearchPair={selectedSearchPair}
-        items={items}
-        setItems={setItems}
-      />
-    </>
-  );
-};
 
 export default Home;

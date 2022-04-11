@@ -1,9 +1,8 @@
 const BookDetails = ({ data }) => {
   return (
     <>
-        
       <article className="book-details">
-      <h2>{data.title}</h2>
+        <h2>{data.title}</h2>
         <picture>
           <img src={data.book_image} alt="Book cover" />
         </picture>
@@ -13,7 +12,10 @@ const BookDetails = ({ data }) => {
         <p className="publisher">
           <span>Published by:</span> {data.publisher}
         </p>
-        <p className="descp"><span>Description:</span>{data.description}</p>
+        <p className="descp">
+          <span>Description:</span>
+          {data.description}
+        </p>
         <p className="buy-links">
           <span>Purchase links:</span>
           {data.buy_links.length !== 0 &&
@@ -25,7 +27,6 @@ const BookDetails = ({ data }) => {
               );
             })}
         </p>
-
         <p className="date">
           {data.created_date && data.updated_date && (
             <>
@@ -39,7 +40,6 @@ const BookDetails = ({ data }) => {
           )}
         </p>
       </article>
-      <article className="book-reviews"></article>
     </>
   );
 };

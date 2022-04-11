@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Cards from "../atoms/Cards";
 
-const Genres = ({ items }) => {
+const Genres = ({ booksToBeDisplayed }) => {
   const isSticky = (e) => {
     const genreHeading = document.querySelectorAll(".genre-heading");
     genreHeading.forEach((item) => {
@@ -20,7 +20,7 @@ const Genres = ({ items }) => {
   }, []);
   return (
     <section className="genres">
-      {items.map((item, index) => {
+      {booksToBeDisplayed.map((item, index) => {
         return (
           item.books.length !== 0 && (
             <div className="genre" key={index}>

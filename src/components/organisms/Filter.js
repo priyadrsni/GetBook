@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Dropdown from "../atoms/Dropdown";
 
-const Filter = ({ options, setGenreAndDate, getBestSellersByDate }) => {
+const Filter = ({ bestSellerOptions, setGenreAndDate }) => {
   const [filteredOption, setFilteredOption] = useState("All");
-  const [filteredDate, setFilteredDate] = useState('current');
+  const [filteredDate, setFilteredDate] = useState("current");
 
   const isFixed = (e) => {
     const filterSection = document.querySelector(".filter-wrap");
@@ -14,10 +14,9 @@ const Filter = ({ options, setGenreAndDate, getBestSellersByDate }) => {
   };
 
   const updateDate = (e) => {
-    let date = e.target.value === "" ? 'current' : e.target.value;
+    let date = e.target.value === "" ? "current" : e.target.value;
     setFilteredDate(date);
-    if(e.target.value !== '') getBestSellersByDate(e.target.value);
-  }
+  };
 
   useEffect(() => {
     setGenreAndDate(filteredOption, filteredDate);
@@ -25,23 +24,23 @@ const Filter = ({ options, setGenreAndDate, getBestSellersByDate }) => {
     return () => {
       window.removeEventListener("scroll", isFixed);
     };
-  }, [options, filteredOption, filteredDate, setGenreAndDate]);
+  }, [bestSellerOptions, filteredOption, filteredDate, setGenreAndDate]);
 
   return (
     <section className="filter-wrap">
       <div className="filter">
-      <form>
-        <label>Genre: </label>
-        <Dropdown
-          defaultOption="All"
-          options={["All", ...options]}
-          setFilteredOption={setFilteredOption}
-        />
-        <label>
-          Published date:
-          <input type="date" onChange={updateDate}/>
-        </label>
-      </form>
+        <form>
+          <label>Genre: </label>
+          <Dropdown
+            defaultOption="All"
+            options={["All", ...bestSellerOptions]}
+            setFilteredOption={setFilteredOption}
+          />
+          <label>
+            Published date:
+            <input type="date" onChange={updateDate} />
+          </label>
+        </form>
       </div>
     </section>
   );
