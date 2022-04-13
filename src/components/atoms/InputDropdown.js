@@ -6,7 +6,7 @@ const InputDropdown = ({
   setSearchValue,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState();
+  const [selectedOption, setSelectedOption] = useState("");
   const [searchText, setSearchText] = useState("");
   let filteredInput = [];
   if(searchParam !== "all") {

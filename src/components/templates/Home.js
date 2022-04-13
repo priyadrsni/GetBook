@@ -5,7 +5,7 @@ import { Component } from "react";
 import {
   fetchBestSellers,
   fetchBestSellersByGenreAndDate,
-  fetchAllBestSellersByDate
+  fetchAllBestSellersByDate,
 } from "../../services/BookService";
 class Home extends Component {
   constructor(props) {
@@ -73,6 +73,8 @@ class Home extends Component {
   filterBooks = (arrayToFilter) => {
     const { category, categoryValue } = this.state.filters;
 
+    console.log(arrayToFilter);
+
     const newArray = arrayToFilter.map((option) => {
       return {
         ...option,
@@ -102,17 +104,12 @@ class Home extends Component {
         date,
         genre.toLowerCase().split(" ").join("-")
       ).then((result) => {
-        if(result.status === "success") {
-          this.setState({ bestSellersByDate: [result.data] });
-          if (this.isCategoryAndValuePresent()) {
-            const booksToBeDisplayedByDate = this.filterBooks([result.data]);
-            this.setState({ booksToBeDisplayed: booksToBeDisplayedByDate });
-          } else {
-            this.setState({ booksToBeDisplayed: [result.data] });
-          }
-        }
-        else {
-          alert("No books available in this date. Please choose another date.");
+        this.setState({ bestSellersByDate: [result] });
+        if (this.isCategoryAndValuePresent()) {
+          const booksToBeDisplayedByDate = this.filterBooks([result]);
+          this.setState({ booksToBeDisplayed: booksToBeDisplayedByDate });
+        } else {
+          this.setState({ booksToBeDisplayed: [result] });
         }
       });
     } else if (date !== "current") {
