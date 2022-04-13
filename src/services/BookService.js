@@ -1,17 +1,59 @@
-// const API_KEY = process.env.REACT_APP_API_KEY;
+import {
+  GET_BEST_SELLERS,
+  GET_BEST_SELLERS_BY_GENRE_AND_DATE,
+  GET_BEST_SELLERS_BY_DATE,
+  GET_REVIEWS,
+} from "../constants/API";
 
-// export const getListOfGenres = async () => {
-//     const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=${API_KEY}`);
-//     const result = await response.json();
-//     return await result.results;
-// }
+const API_KEY = process.env.REACT_APP_API_KEY;
 
-// export const getAllBestSellers = async (genre) => {
-//     const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists.json?api-key=${API_KEY}&list=${genre}`);
-//     return await response.json();
-// }
+const fetchBestSellers = () => {
+  return fetch(GET_BEST_SELLERS.replace("{api-key}", API_KEY))
+    .then((res) => res.json())
+    .then((data) => data.results.lists);
+};
 
-// export const getBestSellerHistory = async () => {
-//     const response = await fetch(`https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json?api-key=${API_KEY}`);
-//     return await response.json();
-// }
+const fetchBestSellersByGenreAndDate = (date, genre) => {
+  return fetch(
+    GET_BEST_SELLERS_BY_GENRE_AND_DATE.replace("{api-key}", API_KEY)
+      .replace("{genre}", genre)
+      .replace("{date}", date)
+  )
+    .then((res) => res.json())
+    .then((data) => data.results)
+    .catch((error) => {
+      console.log("No data for thi url");
+    });
+};
+
+const fetchAllBestSellersByDate = (date) => {
+  return fetch(
+    GET_BEST_SELLERS_BY_DATE.replace("{api-key}", API_KEY).replace(
+      "{date}",
+      date
+    )
+  )
+    .then((res) => res.json())
+    .then((data) => data.results.lists)
+    .catch((error) => {
+      console.log("No data for thi url");
+    });
+};
+
+const fetchReviews = (isbn) => {
+  return fetch(
+    GET_REVIEWS.replace("{api-key}", API_KEY).replace("{isbn}", isbn)
+  )
+    .then((res) => res.json())
+    .then((data) => data.results)
+    .catch((error) => {
+      console.log("No data for thi url");
+    });
+};
+
+export {
+  fetchBestSellers,
+  fetchBestSellersByGenreAndDate,
+  fetchAllBestSellersByDate,
+  fetchReviews,
+};

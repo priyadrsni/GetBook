@@ -1,42 +1,37 @@
 import { useState } from "react";
 import Modal from "./Modal";
 
-const Cards = ({ data }) => {
-  const [show, setShow] = useState(false);
-  const [selectedCard, setSelectedCard] = useState({ card: [] });
+const Cards = ({ books }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState({});
 
-  const showCardDetails = (e) => {
-    const cardData = data.filter(
-      (item) =>
-        e.target.closest("li").getAttribute("data-isbn") === item.primary_isbn10
-    );
-    setSelectedCard((prevState) => ({ ...prevState, card: cardData }));
-    setShow(!show);
+  const showBookDetails = (e, book) => {
+    setSelectedBook(book);
+    setShowModal(!showModal);
   };
-
   return (
     <>
       <ul className="card-wrap">
-        {data.length !== 0 &&
-          data.map((item, index) => {
+        {books.length !== 0 &&
+          books.map((book, index) => {
+            const { book_image, title } = book;
+
             return (
               <li
                 className="card"
                 key={index}
-                onClick={showCardDetails}
-                data-isbn={item.primary_isbn10}
+                onClick={(e) => showBookDetails(e, book)}
               >
-                <img src={item.book_image} alt={item.title} />
+                <img src={book_image} alt={title} />
               </li>
             );
           })}
       </ul>
-      {show && (
+      {showModal && (
         <Modal
-          data={selectedCard}
-          setShow={setShow}
-          similarCards={data}
-          setSelectedCard={setSelectedCard}
+          selectedBook={selectedBook}
+          setShowModal={setShowModal}
+          similarBooks={books}
         />
       )}
     </>

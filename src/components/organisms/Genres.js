@@ -1,37 +1,34 @@
-import { useEffect } from "react";
 import Cards from "../atoms/Cards";
 
+const showNoBooksWhenEmpty = () => {
+  let emptyData = "Loading...";
+  setTimeout(() => {
+    emptyData = "No Books to display";
+  }, 3000);
+  return emptyData
+};
 const Genres = ({ booksToBeDisplayed }) => {
-  const isSticky = (e) => {
-    const genreHeading = document.querySelectorAll(".genre-heading");
-    genreHeading.forEach((item) => {
-      const scrollTop = window.scrollY;
-      scrollTop >= item.getBoundingClientRect().top
-        ? item.classList.add("is-sticky")
-        : item.classList.remove("is-sticky");
-    });
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", isSticky);
-    return () => {
-      window.removeEventListener("scroll", isSticky);
-    };
-  }, []);
   return (
     <section className="genres">
-      {booksToBeDisplayed.map((item, index) => {
-        return (
-          item.books.length !== 0 && (
-            <div className="genre" key={index}>
-              <div className="genre-heading">
-                <h2>{item.list_name}</h2>
+      {booksToBeDisplayed.length !== 0 ? (
+        booksToBeDisplayed.map((genre, index) => {
+          const { list_name, books } = genre;
+          return (
+            books.length !== 0 && (
+              <div className="genre" key={index}>
+                <div className="genre-heading is-sticky">
+                  <h2>{list_name}</h2>
+                </div>
+                <Cards books={books} />
               </div>
-              <Cards data={item.books} />
-            </div>
-          )
-        );
-      })}
+            )
+          );
+        })
+      ) : (
+        <div className="genre">
+          <p className="no-books">{showNoBooksWhenEmpty()}</p>
+        </div>
+      )}
     </section>
   );
 };

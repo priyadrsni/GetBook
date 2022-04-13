@@ -6,14 +6,15 @@ const Reviews = ({ reviews }) => {
       </h3>
       <ul>
         {reviews.length !== 0 ? (
-          reviews.map((item, index) => {
+          reviews.map((review, index) => {
+            const {byline, summary, url} = review;
             return (
               <li key={index}>
-                <h4>{item.byline.slice(2)}</h4>
+                <h4>{byline.slice(2)}</h4>
                 <p>
-                  {item.summary}
+                  {summary}
                   <a
-                    href={item.url}
+                    href={url}
                     target="_blank"
                     rel="noreferrer"
                     className="link link-primary"

@@ -1,30 +1,25 @@
 import BookDetails from "./BookDetails";
-import SimilarCards from "./SimilarCards";
+import SimilarBooks from "./SimilarBooks";
 import Reviews from "./Reviews";
+import { fetchReviews } from "../../services/BookService";
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 
-const Modal = ({ data, setShow, similarCards }) => {
-  data = data.card[0];
+const Modal = ({ selectedBook, setShowModal, similarBooks }) => {
   const [reviews, setReviews] = useState([]);
 
   const getReviewsForABook = useCallback(() => {
-    axios
-      .get(
-        `https://api.nytimes.com/svc/books/v3/reviews.json?api-key=${process.env.REACT_APP_API_KEY}&isbn=${data.primary_isbn10}`
-      )
-      .then((res) => {
-        setReviews([...res.data.results]);
-      });
-  }, [data.primary_isbn10]);
+    fetchReviews(selectedBook.primary_isbn10).then((response) => {
+      setReviews([...response]);
+    });
+  }, [selectedBook.primary_isbn10]);
+
   const closeModal = () => {
-    setShow(false);
+    setShowModal(false);
   };
-  
+
   useEffect(() => {
     getReviewsForABook();
-  }, [reviews, getReviewsForABook]);
-
+  }, [selectedBook.primary_isbn10, getReviewsForABook]);
   return (
     <div className="modal">
       <div className="modal-content">
@@ -35,12 +30,14 @@ const Modal = ({ data, setShow, similarCards }) => {
         </div>
         <div className="modal-body">
           <div className="left">
-            <BookDetails data={data} />
+            <BookDetails selectedBook={selectedBook} />
             <Reviews reviews={reviews} />
           </div>
           <div className="right">
-            <SimilarCards
-              data={similarCards.filter(item => item.primary_isbn10 !== data.primary_isbn10)}
+            <SimilarBooks
+              similarBooks={similarBooks.filter(
+                (similarBook) => similarBook.primary_isbn10 !== selectedBook.primary_isbn10
+              )}
             />
           </div>
         </div>

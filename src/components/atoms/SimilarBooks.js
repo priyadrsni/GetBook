@@ -1,19 +1,19 @@
-const SimilarCards = ({ data }) => {
+const SimilarBooks = ({ similarBooks }) => {
   return (
     <div className="similar-cards-wrap">
       <h3>
         <b>Similar Books</b>
       </h3>
       <ul className="similar-cards card-wrap">
-        {data.length >= 2 ? (
-          data.map((item, index) => {
+        {similarBooks.length >= 2 ? (
+          similarBooks.map((book, index) => {
+            const {book_image, title} = book;
             return (
                 <li
                   className="card"
                   key={index}
-                  data-isbn={item.primary_isbn10}
                 >
-                  <img src={item.book_image} alt={item.title} />
+                  <img src={book_image} alt={title} />
                 </li>
             );
           })
@@ -25,4 +25,4 @@ const SimilarCards = ({ data }) => {
   );
 };
 
-export default SimilarCards;
+export default SimilarBooks;

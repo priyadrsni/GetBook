@@ -25,7 +25,6 @@ const Hero = ({ bestSellerOptions, setSelectedSearchPair }) => {
             setSearchOption={setSearchOption}
           />
           <InputDropdown
-            defaultOption=""
             bestSellerOptions={bestSellerOptions}
             searchParam={searchOption}
             setSearchValue={setSearchValue}

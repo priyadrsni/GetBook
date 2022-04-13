@@ -1,44 +1,49 @@
-const BookDetails = ({ data }) => {
+const BookDetails = ({ selectedBook }) => {
+  const {title, book_image, author, publisher, description, buy_links} = selectedBook;
   return (
     <>
       <article className="book-details">
-        <h2>{data.title}</h2>
+        <div className="left"> 
+        <h2>{title}</h2>
         <picture>
-          <img src={data.book_image} alt="Book cover" />
+          <img src={book_image} alt="Book cover" />
         </picture>
-        <p className="author">
-          <span>Author:</span> {data.author}
+        </div>
+       <div className="right">
+       <p className="author">
+          <span>Author:</span> {author}
         </p>
         <p className="publisher">
-          <span>Published by:</span> {data.publisher}
+          <span>Published by:</span> {publisher}
         </p>
         <p className="descp">
           <span>Description:</span>
-          {data.description}
+          {description}
         </p>
         <p className="buy-links">
           <span>Purchase links:</span>
-          {data.buy_links.length !== 0 &&
-            data.buy_links.map((link, index) => {
+          {buy_links.length !== 0 &&
+            buy_links.map((link, index) => {
               return (
-                <a href={link.url} target="_blank" key={index}>
+                <a href={link.url} target="_blank" rel="noreferrer" key={index}>
                   {link.name}
                 </a>
               );
             })}
         </p>
         <p className="date">
-          {data.created_date && data.updated_date && (
+          {selectedBook.created_date && selectedBook.updated_date && (
             <>
               <span>
-                <b>Created:</b> {data.created_date}
+                <b>Created:</b> {selectedBook.created_date}
               </span>
               <span>
-                <b>Updated:</b> {data.updated_date}
+                <b>Updated:</b> {selectedBook.updated_date}
               </span>
             </>
           )}
         </p>
+       </div>
       </article>
     </>
   );
