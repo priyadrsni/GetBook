@@ -132,11 +132,13 @@ class Home extends Component {
   };
 
   fetchData = () => {
+    //  tru
     fetchBestSellers().then((data) => {
       this.setState({
         bestSellers: data,
         bestSellerOptions: data,
         booksToBeDisplayed: data,
+        // fa
       });
     });
   };

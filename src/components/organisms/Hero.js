@@ -18,7 +18,7 @@ const Hero = ({ bestSellerOptions, setSelectedSearchPair }) => {
       </picture>
       <article>
         <h1 className="title-2xl">NYT Book Store</h1>
-        <form onSubmit={(e) => updateBestSellers(e)}>
+        <form onSubmit={updateBestSellers}>
           <Dropdown
             defaultOption="Search by"
             options={["all", "Author", "Title", "Publisher"]}

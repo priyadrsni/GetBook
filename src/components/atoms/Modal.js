@@ -7,11 +7,11 @@ import { useCallback, useEffect, useState } from "react";
 const Modal = ({ selectedBook, setShowModal, similarBooks }) => {
   const [reviews, setReviews] = useState([]);
 
-  const getReviewsForABook = useCallback(() => {
+  const getReviewsForABook = () => {
     fetchReviews(selectedBook.primary_isbn10).then((response) => {
       setReviews([...response]);
-    });
-  }, [selectedBook.primary_isbn10]);
+    })
+  }
 
   const closeModal = () => {
     setShowModal(false);
@@ -19,7 +19,7 @@ const Modal = ({ selectedBook, setShowModal, similarBooks }) => {
 
   useEffect(() => {
     getReviewsForABook();
-  }, [selectedBook.primary_isbn10, getReviewsForABook]);
+  }, [selectedBook]);
   return (
     <div className="modal">
       <div className="modal-content">
