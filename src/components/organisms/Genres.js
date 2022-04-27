@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import Cards from "../atoms/Cards";
 
 const showNoBooksWhenEmpty = () => {
@@ -7,7 +8,8 @@ const showNoBooksWhenEmpty = () => {
   }, 3000);
   return emptyData
 };
-const Genres = ({ booksToBeDisplayed }) => {
+const Genres = () => {
+  const booksToBeDisplayed = useSelector(state => state.bestSellers.booksToBeDisplayed);
   return (
     <section className="genres">
       {booksToBeDisplayed.length !== 0 ? (

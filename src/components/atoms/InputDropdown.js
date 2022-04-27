@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const InputDropdown = ({
-  bestSellerOptions,
   searchParam,
   setSearchValue,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [searchText, setSearchText] = useState("");
+  const {bestSellerOptions} = useSelector(state => state.bestSellers);
+
   let filteredInput = [];
   if(searchParam !== "all") {
     bestSellerOptions.forEach((item) => {

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Dropdown from "../atoms/Dropdown";
 
-const Filter = ({ bestSellerOptions, setGenreAndDate }) => {
+const Filter = ({ setGenreAndDate }) => {
   const [filteredOption, setFilteredOption] = useState("All");
   const [filteredDate, setFilteredDate] = useState("current");
+  const { bestSellerOptions } = useSelector(state => state.bestSellers);
 
   const isFixed = (e) => {
     const filterSection = document.querySelector(".filter-wrap");

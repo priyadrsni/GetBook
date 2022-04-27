@@ -2,10 +2,12 @@ import BookDetails from "./BookDetails";
 import SimilarBooks from "./SimilarBooks";
 import Reviews from "./Reviews";
 import { fetchReviews } from "../../services/BookService";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const Modal = ({ selectedBook, setShowModal, similarBooks }) => {
+const Modal = ({ setShowModal, similarBooks }) => {
   const [reviews, setReviews] = useState([]);
+  const {selectedBook} = useSelector(state => state.selectedBook);
 
   const getReviewsForABook = () => {
     fetchReviews(selectedBook.primary_isbn10).then((response) => {
@@ -30,7 +32,7 @@ const Modal = ({ selectedBook, setShowModal, similarBooks }) => {
         </div>
         <div className="modal-body">
           <div className="left">
-            <BookDetails selectedBook={selectedBook} />
+            <BookDetails />
             <Reviews reviews={reviews} />
           </div>
           <div className="right">

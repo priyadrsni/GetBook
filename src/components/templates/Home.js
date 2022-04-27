@@ -7,6 +7,8 @@ import {
   fetchBestSellersByGenreAndDate,
   fetchAllBestSellersByDate,
 } from "../../services/BookService";
+import { connect } from 'react-redux';
+import { setBestSellers, setBestSellerOptions, setBestSellersByDate, setBooksToBeDisplayed } from "../../redux/bestSellersSlice";
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +19,6 @@ class Home extends Component {
         genre: "All",
         date: "current",
       },
-      bestSellers: [],
-      bestSellerOptions: [],
-      bestSellersByDate: [],
-      booksToBeDisplayed: [],
     };
   }
 
@@ -37,7 +35,7 @@ class Home extends Component {
       categoryValue !== prevState.filters.categoryValue ||
       genre !== prevState.filters.genre
     ) {
-      this.getBooksBasedOnFilter(this.state.bestSellers);
+      this.getBooksBasedOnFilter(this.props.bestSellers);
     }
   }
 
@@ -63,17 +61,8 @@ class Home extends Component {
     });
   };
 
-  setBooksToBeDisplayed = (newBooks) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      booksToBeDisplayed: newBooks,
-    }));
-  };
-
   filterBooks = (arrayToFilter) => {
     const { category, categoryValue } = this.state.filters;
-
-    console.log(arrayToFilter);
 
     const newArray = arrayToFilter.map((option) => {
       return {
@@ -98,67 +87,83 @@ class Home extends Component {
   getBooksBasedOnFilter = (bestSellers) => {
     const { filters } = this.state;
     const { genre, date } = filters;
+    const { setBestSellersByDate, setBooksToBeDisplayed} = this.props;
 
     if (genre !== "All") {
       fetchBestSellersByGenreAndDate(
         date,
         genre.toLowerCase().split(" ").join("-")
       ).then((result) => {
-        this.setState({ bestSellersByDate: [result] });
+        setBestSellersByDate([result]);
         if (this.isCategoryAndValuePresent()) {
           const booksToBeDisplayedByDate = this.filterBooks([result]);
-          this.setState({ booksToBeDisplayed: booksToBeDisplayedByDate });
+          setBooksToBeDisplayed(booksToBeDisplayedByDate);
         } else {
-          this.setState({ booksToBeDisplayed: [result] });
+          setBooksToBeDisplayed([result]);
         }
       });
     } else if (date !== "current") {
       fetchAllBestSellersByDate(date).then((result) => {
         if (this.isCategoryAndValuePresent()) {
           const booksToBeDisplayed = this.filterBooks(result);
-          this.setState({ booksToBeDisplayed: booksToBeDisplayed });
+          setBooksToBeDisplayed(booksToBeDisplayed);
         } else {
-          this.setState({ booksToBeDisplayed: result });
+          setBooksToBeDisplayed(result);
         }
       });
     } else {
       if (this.isCategoryAndValuePresent()) {
         const booksToBeDisplayed = this.filterBooks(bestSellers);
-        this.setState({ booksToBeDisplayed: booksToBeDisplayed });
+        setBooksToBeDisplayed(booksToBeDisplayed);
       } else {
-        this.setState({ booksToBeDisplayed: bestSellers });
+        setBooksToBeDisplayed(bestSellers);
       }
     }
   };
 
   fetchData = () => {
-    //  tru
+    //  true
+    const { setBestSellers, setBestSellerOptions, setBooksToBeDisplayed } = this.props;
     fetchBestSellers().then((data) => {
-      this.setState({
-        bestSellers: data,
-        bestSellerOptions: data,
-        booksToBeDisplayed: data,
-        // fa
-      });
+      setBestSellers(data);
+      setBestSellerOptions(data);
+      setBooksToBeDisplayed(data);
     });
   };
 
   render() {
-    const { bestSellerOptions, booksToBeDisplayed } = this.state;
     return (
       <>
         <Hero
-          bestSellerOptions={bestSellerOptions}
           setSelectedSearchPair={this.setCategoryAndSearchValue}
         />
         <Filter
-          bestSellerOptions={bestSellerOptions}
           setGenreAndDate={this.setGenreAndDate}
         />
-        <Genres booksToBeDisplayed={booksToBeDisplayed} />
+        <Genres />
       </>
     );
   }
 }
 
-export default Home;
+const mapStateToProps = state => {
+  const { bestSellers } = state;
+  return {
+    bestSellers: bestSellers.bestSellers,
+    bestSellerOptions: bestSellers.bestSellerOptions,
+    bestSellersByDate: bestSellers.bestSellersByDate,
+    booksToBeDisplayed: bestSellers.booksToBeDisplayed
+  };
+}
+
+const mapDispatchToProps = () => ({ 
+  setBestSellers,
+  setBestSellerOptions,
+  setBestSellersByDate,
+  setBooksToBeDisplayed
+}); 
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps()
+)(Home);

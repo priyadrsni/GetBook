@@ -2,7 +2,7 @@ import Dropdown from "../atoms/Dropdown";
 import InputDropdown from "../atoms/InputDropdown";
 import { useState } from "react";
 
-const Hero = ({ bestSellerOptions, setSelectedSearchPair }) => {
+const Hero = ({ setSelectedSearchPair }) => {
   const [searchOption, setSearchOption] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
@@ -25,7 +25,6 @@ const Hero = ({ bestSellerOptions, setSelectedSearchPair }) => {
             setSearchOption={setSearchOption}
           />
           <InputDropdown
-            bestSellerOptions={bestSellerOptions}
             searchParam={searchOption}
             setSearchValue={setSearchValue}
           />

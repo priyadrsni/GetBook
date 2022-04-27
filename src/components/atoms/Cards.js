@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setSelectedBook } from "../../redux/selectedBookSlice";
 import Modal from "./Modal";
 
 const Cards = ({ books }) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedBook, setSelectedBook] = useState({});
+  const dispatch = useDispatch();
 
   const showBookDetails = (e, book) => {
-    setSelectedBook(book);
+    dispatch(setSelectedBook(book));
     setShowModal(!showModal);
   };
   return (
@@ -29,7 +31,6 @@ const Cards = ({ books }) => {
       </ul>
       {showModal && (
         <Modal
-          selectedBook={selectedBook}
           setShowModal={setShowModal}
           similarBooks={books}
         />

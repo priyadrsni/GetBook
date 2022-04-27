@@ -1,4 +1,7 @@
-const BookDetails = ({ selectedBook }) => {
+import { useSelector } from "react-redux";
+
+const BookDetails = () => {
+  const {selectedBook} = useSelector(state => state.selectedBook);
   const {title, book_image, author, publisher, description, buy_links} = selectedBook;
   return (
     <>
