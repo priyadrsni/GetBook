@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import debounce from 'lodash.debounce';
 
 const InputDropdown = ({
   searchParam,
@@ -8,7 +9,7 @@ const InputDropdown = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [searchText, setSearchText] = useState("");
-  const {bestSellerOptions} = useSelector(state => state.bestSellers);
+  const {bestSellerOptions} = useSelector(state => state.books);
 
   let filteredInput = [];
   if(searchParam !== "all") {
@@ -18,6 +19,10 @@ const InputDropdown = ({
       });
     });
   }
+
+  const debouncedSearch = debounce((value, cb) => {
+    cb(value);
+  }, 1000);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -33,14 +38,20 @@ const InputDropdown = ({
   };
 
   const updateDropdown = (e) => {
-    setSearchText(e.target.value);
-    setSelectedOption(e.target.value);
-    if (!isDropdownOpen) toggleDropdown();
+    const value = e.target.value;
+    setSelectedOption(value);
+    debouncedSearch(value, searchBook);
   };
+
+  const searchBook = (value) => {
+    setSearchText(value);
+    if (!isDropdownOpen) toggleDropdown();
+  }
 
   useEffect(() => {
     setSearchValue(selectedOption);
   }, [selectedOption, setSearchValue]);
+  
   return (
     <div className="dropdown-wrap ip-dropdown-wrap">
       <input

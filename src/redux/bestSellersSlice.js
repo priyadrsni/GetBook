@@ -8,7 +8,7 @@ const initialState = {
 }
 
 const bestSellersSlice = createSlice({
-  name: "bestSellers",
+  name: "books",
   initialState,
   reducers: {
     setBestSellers(state, action) {

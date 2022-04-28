@@ -1,14 +1,18 @@
 import Dropdown from "../atoms/Dropdown";
 import InputDropdown from "../atoms/InputDropdown";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setCategory, setCategoryValue } from "../../redux/filterSlice";
 
-const Hero = ({ setSelectedSearchPair }) => {
+const Hero = () => {
   const [searchOption, setSearchOption] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const dispatch = useDispatch();
 
   const updateBestSellers = (e) => {
     e.preventDefault();
-    setSelectedSearchPair(searchOption, searchValue);
+    dispatch(setCategory(searchOption));
+    dispatch(setCategoryValue(searchValue));
   };
 
   return (

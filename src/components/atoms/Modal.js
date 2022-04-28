@@ -2,16 +2,17 @@ import BookDetails from "./BookDetails";
 import SimilarBooks from "./SimilarBooks";
 import Reviews from "./Reviews";
 import { fetchReviews } from "../../services/BookService";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { setReviews } from "../../redux/selectedBookSlice";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const Modal = ({ setShowModal, similarBooks }) => {
-  const [reviews, setReviews] = useState([]);
-  const {selectedBook} = useSelector(state => state.selectedBook);
+  const dispatch = useDispatch();
+  const { book } = useSelector(state => state.selectedBook);
 
   const getReviewsForABook = () => {
-    fetchReviews(selectedBook.primary_isbn10).then((response) => {
-      setReviews([...response]);
+    fetchReviews(book.primary_isbn10).then((response) => {
+      dispatch(setReviews([...response]));
     })
   }
 
@@ -21,7 +22,7 @@ const Modal = ({ setShowModal, similarBooks }) => {
 
   useEffect(() => {
     getReviewsForABook();
-  }, [selectedBook]);
+  }, [book]);
   return (
     <div className="modal">
       <div className="modal-content">
@@ -33,12 +34,12 @@ const Modal = ({ setShowModal, similarBooks }) => {
         <div className="modal-body">
           <div className="left">
             <BookDetails />
-            <Reviews reviews={reviews} />
+            <Reviews />
           </div>
           <div className="right">
             <SimilarBooks
               similarBooks={similarBooks.filter(
-                (similarBook) => similarBook.primary_isbn10 !== selectedBook.primary_isbn10
+                (similarBook) => similarBook.primary_isbn10 !== book.primary_isbn10
               )}
             />
           </div>

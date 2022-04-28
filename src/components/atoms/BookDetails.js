@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
 
 const BookDetails = () => {
-  const {selectedBook} = useSelector(state => state.selectedBook);
-  const {title, book_image, author, publisher, description, buy_links} = selectedBook;
+  const {book} = useSelector(state => state.selectedBook);
+  const {title, book_image, author, publisher, description, buy_links} = book;
   return (
     <>
       <article className="book-details">
@@ -35,13 +35,13 @@ const BookDetails = () => {
             })}
         </p>
         <p className="date">
-          {selectedBook.created_date && selectedBook.updated_date && (
+          {book.created_date && book.updated_date && (
             <>
               <span>
-                <b>Created:</b> {selectedBook.created_date}
+                <b>Created:</b> {book.created_date}
               </span>
               <span>
-                <b>Updated:</b> {selectedBook.updated_date}
+                <b>Updated:</b> {book.updated_date}
               </span>
             </>
           )}

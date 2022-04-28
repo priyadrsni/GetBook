@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setGenre } from "../../redux/filterSlice";
 
 const Dropdown = ({
   defaultOption,
   options,
-  setFilteredOption,
   setSearchOption,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(defaultOption);
+  const dispatch = useDispatch();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -15,8 +17,8 @@ const Dropdown = ({
 
   const updateDropdownValue = (e) => {
     setSelectedOption(e.target.innerText);
-    setFilteredOption && setFilteredOption(e.target.innerText);
-    setSearchOption && setSearchOption(e.target.innerText);
+    if(setSearchOption) setSearchOption(e.target.innerText);
+    else dispatch(setGenre(e.target.innerText));
     toggleDropdown();
   };
 

@@ -46,14 +46,14 @@
   left: 0;
   right: 0;
   z-index: 101;
-//   animation: smoothScroll 1s forwards;
 }
-@keyframes smoothScroll {
-  0% {
-    transform: translateY(-40px);
-  }
-  100% {
-    transform: translateY(0px);
+
+.loader {
+  text-align: center;
+  padding: 80px 0;
+  img {
+    @extend .rotate;
+    width: 50px;
   }
 }
 

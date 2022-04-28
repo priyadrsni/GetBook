@@ -1,11 +1,14 @@
-const Reviews = ({ reviews }) => {
+import { useSelector } from "react-redux";
+
+const Reviews = () => {
+  const { reviews } = useSelector(state => state.selectedBook)
   return (
     <div className="reviews">
       <h3>
         <b>Reviews</b>
       </h3>
       <ul>
-        {reviews.length !== 0 ? (
+        {
           reviews.map((review, index) => {
             const {byline, summary, url} = review;
             return (
@@ -24,12 +27,7 @@ const Reviews = ({ reviews }) => {
                 </p>
               </li>
             );
-          })
-        ) : (
-          <li>
-            <p>No reviews</p>
-          </li>
-        )}
+          })}
       </ul>
     </div>
   );

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Dropdown from "../atoms/Dropdown";
+import {setDate} from "../../redux/filterSlice";
 
-const Filter = ({ setGenreAndDate }) => {
-  const [filteredOption, setFilteredOption] = useState("All");
-  const [filteredDate, setFilteredDate] = useState("current");
-  const { bestSellerOptions } = useSelector(state => state.bestSellers);
+const Filter = () => {
+  const { bestSellerOptions } = useSelector(state => state.books);
+  const dispatch = useDispatch();
 
   const isFixed = (e) => {
     const filterSection = document.querySelector(".filter-wrap");
@@ -17,16 +17,15 @@ const Filter = ({ setGenreAndDate }) => {
 
   const updateDate = (e) => {
     let date = e.target.value === "" ? "current" : e.target.value;
-    setFilteredDate(date);
+    dispatch(setDate(date));
   };
 
   useEffect(() => {
-    setGenreAndDate(filteredOption, filteredDate);
     window.addEventListener("scroll", isFixed);
     return () => {
       window.removeEventListener("scroll", isFixed);
     };
-  }, [bestSellerOptions, filteredOption, filteredDate, setGenreAndDate]);
+  }, [bestSellerOptions]);
 
   return (
     <section className="filter-wrap">
@@ -36,7 +35,6 @@ const Filter = ({ setGenreAndDate }) => {
           <Dropdown
             defaultOption="All"
             options={["All", ...bestSellerOptions]}
-            setFilteredOption={setFilteredOption}
           />
           <label>
             Published date:

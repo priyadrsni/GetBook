@@ -10,7 +10,10 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 const fetchBestSellers = () => {
   return fetch(GET_BEST_SELLERS.replace("{api-key}", API_KEY))
     .then((res) => res.json())
-    .then((data) => data.results.lists);
+    .then((data) => data.results.lists)
+    .catch((error) => {
+      console.log("No data for this url");
+    });
 };
 
 const fetchBestSellersByGenreAndDate = (date, genre) => {
@@ -22,7 +25,7 @@ const fetchBestSellersByGenreAndDate = (date, genre) => {
     .then((res) => res.json())
     .then((data) => data.results)
     .catch((error) => {
-      console.log("No data for thi url");
+      console.log("No data for this url");
     });
 };
 
@@ -36,7 +39,7 @@ const fetchAllBestSellersByDate = (date) => {
     .then((res) => res.json())
     .then((data) => data.results.lists)
     .catch((error) => {
-      console.log("No data for thi url");
+      console.log("No data for this url");
     });
 };
 
@@ -47,7 +50,7 @@ const fetchReviews = (isbn) => {
     .then((res) => res.json())
     .then((data) => data.results)
     .catch((error) => {
-      console.log("No data for thi url");
+      console.log("No data for this url");
     });
 };
 
